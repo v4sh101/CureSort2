@@ -1,0 +1,75 @@
+@model CureSort2.Data.MedicalDevice
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Item</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Barcode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Barcode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Bin)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Bin.BinNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Brand)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Brand)
+        </dd>
+        @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+        {
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CreatedBy)
+        </dd>
+        }
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+        {
+        <dt>
+            @Html.DisplayNameFor(model => model.IsApproved)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsApproved)
+        </dd>
+        }
+        <dt>
+            @Html.DisplayNameFor(model => model.Manufacturer)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Manufacturer)
+        </dd>
+        @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+        {
+        <dt>
+            @Html.DisplayNameFor(model => model.PhotoUrl)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PhotoUrl)
+        </dd>
+        }
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CureSort2</title>
+    <title>@ViewData["Title"] - C.U.R.E. Sort</title>
 
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -18,22 +18,29 @@
     @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color:crimson;">
+        <div class="container" style="background-color:crimson">
+            <div class="navbar-header" style="background-color:crimson">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">CureSort2</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand" style="color:black"><img src="/images/cureicon.png" height="30" width="30" style="position:relative; float:left; top:-5px" /> &nbsp; C.U.R.E. Sort</a>
             </div>
-            <div class="navbar-collapse collapse">
+            <div class="navbar-collapse collapse" style="background-color:crimson">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index" style="color:black">Home</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="About" style="color:black">About</a></li>
+@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+{
+                    <li><a asp-area="" asp-controller="MedicalDevices" asp-action="Index" style="color:black">Items</a></li>
+}
+                  @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+                  {
+                    <li><a asp-area="" asp-controller="Bins" asp-action="Index" style="color:black">Bins</a></li>
+                  }
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -43,7 +50,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2017 - CureSort2</p>
+            <p>&copy; 2017 - Cure Sort</p>
         </footer>
     </div>
 

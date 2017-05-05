@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using CureSort2.Data;
 using CureSort2.Models;
 using CureSort2.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace CureSort2
 {
@@ -23,7 +24,6 @@ namespace CureSort2
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
             if (env.IsDevelopment())
             {
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
@@ -39,6 +39,31 @@ namespace CureSort2
 
         public IConfigurationRoot Configuration { get; }
 
+        public static class RolesData
+        {
+            private static readonly string[] Roles = new string[] { "Administrator"};
+
+            public static async Task SeedRoles(IServiceProvider serviceProvider)
+            {
+                using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                {
+                    var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+
+                        await dbContext.Database.MigrateAsync();
+
+                        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+                        foreach (var role in Roles)
+                        {
+                            if (!await roleManager.RoleExistsAsync(role))
+                            {
+                                await roleManager.CreateAsync(new IdentityRole(role));
+                            }
+                        }
+                }
+            }
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -48,9 +73,17 @@ namespace CureSort2
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddDbContext<CureContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Administrator"));
+            });
 
             services.AddMvc();
 
@@ -60,10 +93,11 @@ namespace CureSort2
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, CureContext context)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            RolesData.SeedRoles(app.ApplicationServices).Wait();
 
             app.UseApplicationInsightsRequestTelemetry();
 
@@ -92,6 +126,8 @@ namespace CureSort2
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            DbInitializer.Initialize(context);
         }
     }
 }

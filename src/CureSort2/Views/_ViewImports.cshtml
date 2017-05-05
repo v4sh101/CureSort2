@@ -3,5 +3,7 @@
 @using CureSort2.Models.AccountViewModels
 @using CureSort2.Models.ManageViewModels
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization;
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @inject Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration TelemetryConfiguration
+@inject IAuthorizationService AuthorizationService

@@ -1,0 +1,36 @@
+@model CureSort2.Data.Bin
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Bin</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.BinNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BinNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.InUse)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.InUse)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.BinID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

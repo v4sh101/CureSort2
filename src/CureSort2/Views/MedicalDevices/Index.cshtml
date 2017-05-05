@@ -1,0 +1,88 @@
+@model IEnumerable<CureSort2.Data.MedicalDevice>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Bin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Brand)
+            </th>
+            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.CreatedBy)
+                </th>
+            }
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            {
+            <th>
+                @Html.DisplayNameFor(model => model.IsApproved)
+            </th>
+            }
+            <th>
+                @Html.DisplayNameFor(model => model.Manufacturer)
+            </th>
+            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            {
+            <th>
+                @Html.DisplayNameFor(model => model.PhotoUrl)
+            </th>
+            }
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bin.BinNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Brand)
+            </td>
+            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            {
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy)
+            </td>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            {
+            <td>
+                @Html.DisplayFor(modelItem => item.IsApproved)
+            </td>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.Manufacturer)
+            </td>
+            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            {
+            <td>
+                <a href="@item.PhotoUrl"><img src="@item.PhotoUrl" height="50" width="50" alt="@item.Description"/></a>
+            </td>
+            }
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

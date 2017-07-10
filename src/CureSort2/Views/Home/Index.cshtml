@@ -13,18 +13,21 @@
             <img src="/images/barcode.gif" /><br />
             <br/>
             <p>
-                <input type="text" style="width:400px" id="items" name="barcode" onkeypress="handle(event)" /><br/><br/>
-                <button type="submit" value="Submit">Submit</button>
+                <input id="SearchBox" type="text" placeholder="Search" style="margin-top:12px; width:200px" name="barcode" onkeypress="handle(event)" />
             </p>
         </form>
     </div>
 </div>
 <script>
+        window.onload = function () {
+            document.getElementById("SearchBox").focus();
+        };
+
     function handle(e){
         if(e.keyCode === 13){
             e.preventDefault(); // Ensure it is only this code that rusn
 
-            window.location.href = ('/medicaldevices?barcode=' + items.value.toString())
+            window.location.href = ('/medicaldevices?barcode=' + SearchBox.value.toString())
         }
     }
 </script>

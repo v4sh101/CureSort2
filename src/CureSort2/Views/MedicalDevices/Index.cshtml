@@ -8,6 +8,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<p><input id="SearchBox" type="text" placeholder="Search" style="margin-top:12px; width:200px" name="barcode" onkeypress="handle(event)" /></p>
 <table class="table">
     <thead>
         <tr>
@@ -86,3 +87,16 @@
 }
     </tbody>
 </table>
+<script>
+    window.onload = function () {
+        document.getElementById("SearchBox").focus();
+    };
+
+    function handle(e) {
+        if (e.keyCode === 13) {
+            e.preventDefault(); // Ensure it is only this code that rusn
+
+            window.location.href = ('/medicaldevices?barcode=' + SearchBox.value.toString())
+        }
+    }
+</script>

@@ -18,6 +18,7 @@ namespace CureSort2
 {
     public class Startup
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -45,6 +46,7 @@ namespace CureSort2
 
             public static async Task SeedRoles(IServiceProvider serviceProvider)
             {
+                var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
                 using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
@@ -52,7 +54,7 @@ namespace CureSort2
                         await dbContext.Database.MigrateAsync();
 
                         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
+                    
                         foreach (var role in Roles)
                         {
                             if (!await roleManager.RoleExistsAsync(role))

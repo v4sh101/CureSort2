@@ -27,25 +27,33 @@ namespace CureSort2.Controllers
         // GET: MedicalDevices
         public async Task<IActionResult> Index(string barcode)
         {
-            var cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
-                              where m.Barcode.Equals(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode)
-                              select m;
-            if (User.IsInRole("Administrator") && !String.IsNullOrEmpty(barcode))
+                var cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                                  select m;
+
+            if (User.IsInRole("Administrator") && String.IsNullOrEmpty(barcode))
             {
                     cureContext = cureContext.Where(m => (m.IsApproved.Equals(false)));
             }
-            else if (User.IsInRole("Administrator") && String.IsNullOrEmpty(barcode))
+            else if (User.IsInRole("Administrator") && !String.IsNullOrEmpty(barcode))
             {
-                cureContext = cureContext.Where(m => m.IsApproved.Equals(false));
+                cureContext = cureContext.Where(m => m.IsApproved.Equals(false) && m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode));
             }
-            else if (!String.IsNullOrEmpty(barcode))
+            else if (String.IsNullOrEmpty(barcode))
             {
                 cureContext = cureContext.Where(m => (m.IsApproved.Equals(true)));
             }
             else
             {
-                cureContext = cureContext.Where(m => m.IsApproved.Equals(true));
+                cureContext = cureContext.Where(m => m.IsApproved.Equals(true) && m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode));
             }
+
+            if (barcode == null && !User.IsInRole("Administrator"))
+            {
+                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                                  where m.ID.Equals("?")
+                                  select m;
+            }
+
             return View(await cureContext.ToListAsync());
         }
 
@@ -82,14 +90,17 @@ namespace CureSort2.Controllers
         {
             if (ModelState.IsValid)
             {
-                var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                if (file != null)
+                {
+                    var uploads = Path.Combine(_environment.WebRootPath, "uploads");
                     if (file.Length > 0)
                     {
                         using (var fileStream = new FileStream(Path.Combine(uploads, file.FileName), FileMode.Create))
                         {
                             await file.CopyToAsync(fileStream);
                         }
-                    medicalDevice.PhotoUrl = "uploads" + '/' + file.FileName;
+                        medicalDevice.PhotoUrl = "uploads" + '/' + file.FileName;
+                    }
                 }
                 medicalDevice.CreatedBy = User.Identity.Name;
                 medicalDevice.IsApproved = false;

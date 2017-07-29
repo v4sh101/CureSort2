@@ -1,4 +1,4 @@
-@model CureSort2.Models.MedicalDevice
+@model CureSort2.Data.MedicalDevice
 
 @{
     ViewData["Title"] = "Details";
@@ -17,7 +17,7 @@
             @Html.DisplayFor(model => model.Barcode)
         </dd>
         <dt>
-            Product Code
+            @Html.DisplayNameFor(model => model.Bin)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Bin.BinNumber)

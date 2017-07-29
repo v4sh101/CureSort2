@@ -1,4 +1,4 @@
-@model PaginatedList<CureSort2.Models.MedicalDevice>
+@model IEnumerable<CureSort2.Data.MedicalDevice>
 @{
     ViewData["Title"] = "Index";
 }
@@ -8,49 +8,38 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            <input id="SearchBox" placeholder="Search" autofocus type="text" name="barcode" style="margin-top:12px; width:200px" value="@ViewData["currentFilter"]" onkeypress="handle(event)" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
-{
-            <a asp-action="Index">Back to Full List</a>
-}
-        </p>
-    </div>
-</form>
+<p><input id="SearchBox" type="text" placeholder="Search" style="margin-top:12px; width:200px" name="barcode" onkeypress="handle(event)" /></p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                Product Code
+                @Html.DisplayNameFor(model => model.Bin)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["BrandSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Brand</a>
+                @Html.DisplayNameFor(model => model.Brand)
             </th>
             @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
             {
                 <th>
-                    CreatedBy
+                    @Html.DisplayNameFor(model => model.CreatedBy)
                 </th>
             }
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Description</a>
-</th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
             @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
             {
             <th>
-                IsApproved
+                @Html.DisplayNameFor(model => model.IsApproved)
             </th>
             }
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["ManufacturerSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Manufacturer</a>
-</th>
+                @Html.DisplayNameFor(model => model.Manufacturer)
+            </th>
             @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
             {
             <th>
-                PhotoUrl
+                @Html.DisplayNameFor(model => model.PhotoUrl)
             </th>
             }
             <th></th>
@@ -98,28 +87,16 @@
 }
     </tbody>
 </table>
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
-
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-page="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-page="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
 <script>
-
     window.onload = function () {
-        document.getElementById("SearchBox").value = '';
+        document.getElementById("SearchBox").focus();
     };
+
+    function handle(e) {
+        if (e.keyCode === 13) {
+            e.preventDefault(); // Ensure it is only this code that rusn
+
+            window.location.href = ('/medicaldevices?barcode=' + SearchBox.value.toString())
+        }
+    }
 </script>

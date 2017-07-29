@@ -1,4 +1,4 @@
-@model IEnumerable<CureSort2.Models.Bin>
+@model IEnumerable<CureSort2.Data.Bin>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +13,7 @@
     <thead>
         <tr>
             <th>
-                Product Code
+                @Html.DisplayNameFor(model => model.BinNumber)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.InUse)

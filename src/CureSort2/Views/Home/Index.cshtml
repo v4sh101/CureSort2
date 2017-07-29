@@ -9,26 +9,21 @@
     <div style="text-align:center">
         <p>Welcome to C.U.R.E. Sort. Here you can scan in barcodes from items or search for their name.</p>
         <h3>Please scan or search your item in below.</h3>
-        <form action="/medicaldevices">
             <img src="/images/barcode.gif" /><br />
             <br/>
-            <p>
-                <input id="SearchBox" type="text" placeholder="Search" style="margin-top:12px; width:200px" name="barcode" onkeypress="handle(event)" />
-            </p>
-        </form>
+            <form asp-controller="MedicalDevices" asp-action="Index" method="get">
+                <div class="form-actions no-color">
+                    <p>
+                        <input id="SearchBox" placeholder="Search" autofocus type="text" name="barcode" style="margin-top:12px; width:200px" value="@ViewData["currentFilter"]"/>
+                        <input type="submit" value="Search" class="btn btn-default" /> |
+                    </p>
+                </div>
+            </form>
     </div>
 </div>
 <script>
         window.onload = function () {
-            document.getElementById("SearchBox").focus();
+            document.getElementById("SearchBox").value = '';
         };
-
-    function handle(e){
-        if(e.keyCode === 13){
-            e.preventDefault(); // Ensure it is only this code that rusn
-
-            window.location.href = ('/medicaldevices?barcode=' + SearchBox.value.toString())
-        }
-    }
 </script>
 

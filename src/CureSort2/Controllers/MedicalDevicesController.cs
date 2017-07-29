@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CureSort2.Data;
+using CureSort2.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.IO;
@@ -25,36 +27,81 @@ namespace CureSort2.Controllers
         }
 
         // GET: MedicalDevices
-        public async Task<IActionResult> Index(string barcode)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string barcode, int? page)
         {
-                var cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
-                                  select m;
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["BrandSortParm"] = String.IsNullOrEmpty(sortOrder) ? "brand_desc" : "";
+            ViewData["DescriptionSortParm"] = sortOrder == "Description" ? "description_desc" : "Description";
+            ViewData["ManufacturerSortParm"] = sortOrder == "Manufacturer" ? "manufacturer_desc" : "Manufacturer";
 
-            if (User.IsInRole("Administrator") && String.IsNullOrEmpty(barcode))
+
+            if (barcode != null)
             {
-                    cureContext = cureContext.Where(m => (m.IsApproved.Equals(false)));
-            }
-            else if (User.IsInRole("Administrator") && !String.IsNullOrEmpty(barcode))
-            {
-                cureContext = cureContext.Where(m => m.IsApproved.Equals(false) && m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode));
-            }
-            else if (String.IsNullOrEmpty(barcode))
-            {
-                cureContext = cureContext.Where(m => (m.IsApproved.Equals(true)));
+                page = 1;
             }
             else
             {
-                cureContext = cureContext.Where(m => m.IsApproved.Equals(true) && m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode));
+                barcode = currentFilter;
+            }
+            ViewData["CurrentFilter"] = barcode;
+
+            var cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                              select m;
+
+            if (User.IsInRole("Administrator"))
+            {
+                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                                  where m.IsApproved.Equals(false)
+                                  select m;
+            }
+            else
+            {
+                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                                  where m.IsApproved.Equals(true)
+                                  select m;
             }
 
-            if (barcode == null && !User.IsInRole("Administrator"))
+            
+            if ((barcode == null || barcode.Trim().Length == 1) && !User.IsInRole("Administrator"))
             {
                 cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
                                   where m.ID.Equals("?")
                                   select m;
             }
 
-            return View(await cureContext.ToListAsync());
+            if (String.IsNullOrEmpty(barcode))
+            {
+                cureContext = cureContext.Where(m => (m.IsApproved.Equals(false)));
+            }
+            else
+            {
+                cureContext = cureContext.Where(m => m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode) || (m.Brand + " " + m.Description).Contains(barcode));
+            }
+
+            switch (sortOrder)
+            {
+                case "brand_desc":
+                    cureContext = cureContext.OrderByDescending(s => s.Brand);
+                    break;
+                case "Description":
+                    cureContext = cureContext.OrderBy(s => s.Description);
+                    break;
+                case "description_desc":
+                    cureContext = cureContext.OrderByDescending(s => s.Description);
+                    break;
+                case "Manufacturer":
+                    cureContext = cureContext.OrderBy(s => s.Manufacturer);
+                    break;
+                case "manufacturer_desc":
+                    cureContext = cureContext.OrderByDescending(s => s.Manufacturer);
+                    break;
+                default:
+                    cureContext = cureContext.OrderBy(s => s.Brand);
+                    break;
+            }
+
+            int pageSize = 100;
+            return View(await PaginatedList<MedicalDevice>.CreateAsync(cureContext.AsNoTracking(), page ?? 1, pageSize));
         }
 
         // GET: MedicalDevices/Details/5
@@ -210,6 +257,42 @@ namespace CureSort2.Controllers
         private bool MedicalDeviceExists(int id)
         {
             return _context.MedicalDevices.Any(e => e.ID == id);
+        }
+
+        private double JaroDistance(string source, string target)
+        {
+            int m = source.Intersect(target).Count();
+
+            if (m == 0)
+            {
+               return 0;
+            }
+            else
+            {
+                string sourceTargetIntersectAsString = "";
+                string targetSourceIntersectAsString = "";
+                IEnumerable<char> sourceIntersectTarget = source.Intersect(target);
+                IEnumerable<char> targetIntersectSource = target.Intersect(source);
+                foreach(char character in sourceIntersectTarget) { sourceTargetIntersectAsString += character; }
+                foreach(char character in targetIntersectSource) { targetSourceIntersectAsString += character; }
+                double t = LevenshteinDistance(sourceTargetIntersectAsString ,targetSourceIntersectAsString) / 2;
+                return ((m / source.Length) + (m / target.Length) + ((m - t) / m)) / 3;
+            }
+        }
+
+        private int LevenshteinDistance(string source, string target)
+        {
+            if (source.Length == 0) { return target.Length; }
+            if (target.Length == 0) { return source.Length; }
+
+            int distance = 0;
+
+            if (source[source.Length - 1] == target[target.Length - 1]) { distance = 0; }
+            else { distance = 1; }
+
+            return Math.Min(Math.Min(LevenshteinDistance(source.Substring(0, source.Length - 1), target) + 1,
+                                     LevenshteinDistance(source, target.Substring(0, target.Length - 1))) + 1,
+                                     LevenshteinDistance(source.Substring(0, source.Length - 1), target.Substring(0, target.Length - 1)) + distance);
         }
     }
 }

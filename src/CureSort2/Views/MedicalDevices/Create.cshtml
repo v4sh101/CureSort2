@@ -1,4 +1,4 @@
-@model CureSort2.Data.MedicalDevice
+@model CureSort2.Models.MedicalDevice
 
 @{
     ViewData["Title"] = "Create";
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="BinID" class="col-md-2 control-label"></label>
+            <label class="col-md-2 control-label">Product Code</label>
             <div class="col-md-10">
                 <select asp-for="BinID" class ="form-control" asp-items="ViewBag.BinID"></select>
             </div>

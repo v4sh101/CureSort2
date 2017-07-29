@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CureSort2.Data
+namespace CureSort2.Models
 {
     public class MedicalDevice
     {
@@ -23,3 +23,4 @@ namespace CureSort2.Data
         public Bin Bin { get; set; }
     }
 }
+

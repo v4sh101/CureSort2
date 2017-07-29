@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CureSort2.Data;
+using CureSort2.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CureSort2.Controllers

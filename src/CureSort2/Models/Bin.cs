@@ -5,13 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CureSort2.Data
+namespace CureSort2.Models
 {
     public class Bin
     {
         public int BinID { get; set; }
 
-        [Display (Name="Bin#")]
+        [Display(Name = "Bin#")]
         public string BinNumber { get; set; }
         public string Name { get; set; }
         public bool InUse { get; set; }

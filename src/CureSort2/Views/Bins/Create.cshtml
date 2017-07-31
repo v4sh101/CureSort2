@@ -1,4 +1,4 @@
-@model CureSort2.Data.Bin
+@model CureSort2.Models.Bin
 
 @{
     ViewData["Title"] = "Create";
@@ -8,11 +8,11 @@
 
 <form asp-action="Create">
     <div class="form-horizontal">
-        <h4>Bin</h4>
+        <h4>Product Code</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
-            <label asp-for="BinNumber" class="col-md-2 control-label"></label>
+            <label class="col-md-2 control-label">Product Code</label>
             <div class="col-md-10">
                 <input asp-for="BinNumber" class="form-control" />
                 <span asp-validation-for="BinNumber" class="text-danger" />

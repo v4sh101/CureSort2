@@ -39,7 +39,7 @@
 }
                   @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
                   {
-                    <li><a asp-area="" asp-controller="Bins" asp-action="Index" style="color:black">Bins</a></li>
+                    <li><a asp-area="" asp-controller="Bins" asp-action="Index" style="color:black">Product Codes</a></li>
                   }
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")

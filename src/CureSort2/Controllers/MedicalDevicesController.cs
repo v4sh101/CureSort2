@@ -41,24 +41,49 @@ namespace CureSort2.Controllers
             ViewData["CurrentFilter"] = barcode;
 
             var cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                              where m.IsApproved.Equals(true) && m.ID.Equals("?")
                               select m;
 
 
-            if (String.IsNullOrEmpty(barcode))
+            if (String.IsNullOrEmpty(barcode) && User.IsInRole("Administrator"))
             {
-                cureContext = cureContext.Where(m => (m.IsApproved.Equals(false)));
+                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                              where m.IsApproved.Equals(false)
+                              select m;
             }
             else if(!String.IsNullOrEmpty(barcode) && User.IsInRole("Administrator"))
             {
-                cureContext = cureContext.Where(m => m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode) || (m.Brand + " " + m.Description).Contains(barcode));
+                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                              where m.Barcode.Contains(barcode) || m.Brand.Contains(barcode) || m.Description.Contains(barcode)
+                              select m;
+                if(cureContext.Any())
+                {
+
+                }
+                else
+                {
+                    ViewData["Message"] = "Not Found";
+                }
             }
             else if (String.IsNullOrEmpty(barcode) && !User.IsInRole("Administrator"))
             {
-                cureContext = cureContext.Where(m => (m.IsApproved.Equals(true) && m.ID.Equals("?")));
+                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                              where m.IsApproved.Equals(true) &&  m.ID.Equals("?")
+                              select m;
             }
             else
             {
-                cureContext = cureContext.Where(m => m.IsApproved.Equals(true) && (m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode) || (m.Brand + " " + m.Description).Contains(barcode)));
+                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                              where m.IsApproved.Equals(true) && (m.Barcode.Contains(barcode) || m.Brand.Contains(barcode) || m.Description.Contains(barcode))
+                              select m;
+                if (cureContext.Any())
+                {
+
+                }
+                else
+                {
+                    ViewData["Message"] = "Not Found";
+                }
             }
 
             int pageSize = 100;

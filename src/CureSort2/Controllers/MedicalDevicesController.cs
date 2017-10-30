@@ -27,13 +27,8 @@ namespace CureSort2.Controllers
         }
 
         // GET: MedicalDevices
-        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string barcode, int? page)
+        public async Task<IActionResult> Index(string currentFilter, string barcode, int? page)
         {
-            ViewData["CurrentSort"] = sortOrder;
-            ViewData["BrandSortParm"] = String.IsNullOrEmpty(sortOrder) ? "brand_desc" : "";
-            ViewData["DescriptionSortParm"] = sortOrder == "Description" ? "description_desc" : "Description";
-            ViewData["ManufacturerSortParm"] = sortOrder == "Manufacturer" ? "manufacturer_desc" : "Manufacturer";
-
 
             if (barcode != null)
             {
@@ -48,56 +43,22 @@ namespace CureSort2.Controllers
             var cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
                               select m;
 
-            if (User.IsInRole("Administrator"))
-            {
-                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
-                                  where m.IsApproved.Equals(false)
-                                  select m;
-            }
-            else
-            {
-                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
-                                  where m.IsApproved.Equals(true)
-                                  select m;
-            }
-
-            
-            if ((barcode == null || barcode.Trim().Length == 1) && !User.IsInRole("Administrator"))
-            {
-                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
-                                  where m.ID.Equals("?")
-                                  select m;
-            }
 
             if (String.IsNullOrEmpty(barcode))
             {
                 cureContext = cureContext.Where(m => (m.IsApproved.Equals(false)));
             }
-            else
+            else if(!String.IsNullOrEmpty(barcode) && User.IsInRole("Administrator"))
             {
                 cureContext = cureContext.Where(m => m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode) || (m.Brand + " " + m.Description).Contains(barcode));
             }
-
-            switch (sortOrder)
+            else if (String.IsNullOrEmpty(barcode) && !User.IsInRole("Administrator"))
             {
-                case "brand_desc":
-                    cureContext = cureContext.OrderByDescending(s => s.Brand);
-                    break;
-                case "Description":
-                    cureContext = cureContext.OrderBy(s => s.Description);
-                    break;
-                case "description_desc":
-                    cureContext = cureContext.OrderByDescending(s => s.Description);
-                    break;
-                case "Manufacturer":
-                    cureContext = cureContext.OrderBy(s => s.Manufacturer);
-                    break;
-                case "manufacturer_desc":
-                    cureContext = cureContext.OrderByDescending(s => s.Manufacturer);
-                    break;
-                default:
-                    cureContext = cureContext.OrderBy(s => s.Brand);
-                    break;
+                cureContext = cureContext.Where(m => (m.IsApproved.Equals(true) && m.ID.Equals("?")));
+            }
+            else
+            {
+                cureContext = cureContext.Where(m => m.IsApproved.Equals(true) && (m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode) || (m.Brand + " " + m.Description).Contains(barcode)));
             }
 
             int pageSize = 100;

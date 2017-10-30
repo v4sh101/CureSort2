@@ -27,7 +27,7 @@
                 Product Code
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["BrandSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Brand</a>
+                Brand
             </th>
             @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
             {
@@ -36,7 +36,7 @@
                 </th>
             }
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Description</a>
+                Description
 </th>
             @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
             {
@@ -45,7 +45,7 @@
             </th>
             }
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["ManufacturerSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Manufacturer</a>
+                Manufacturer
 </th>
             @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
             {
@@ -123,3 +123,4 @@
         document.getElementById("SearchBox").value = '';
     };
 </script>
+

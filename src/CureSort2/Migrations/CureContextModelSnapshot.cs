@@ -16,7 +16,7 @@ namespace CureSort2.Migrations
                 .HasAnnotation("ProductVersion", "1.0.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("CureSort2.Models.Bin", b =>
+            modelBuilder.Entity("CureSort2.Data.Bin", b =>
                 {
                     b.Property<int>("BinID")
                         .ValueGeneratedOnAdd();
@@ -32,7 +32,7 @@ namespace CureSort2.Migrations
                     b.ToTable("Bin");
                 });
 
-            modelBuilder.Entity("CureSort2.Models.MedicalDevice", b =>
+            modelBuilder.Entity("CureSort2.Data.MedicalDevice", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
@@ -62,9 +62,9 @@ namespace CureSort2.Migrations
                     b.ToTable("MedicalDevice");
                 });
 
-            modelBuilder.Entity("CureSort2.Models.MedicalDevice", b =>
+            modelBuilder.Entity("CureSort2.Data.MedicalDevice", b =>
                 {
-                    b.HasOne("CureSort2.Models.Bin", "Bin")
+                    b.HasOne("CureSort2.Data.Bin", "Bin")
                         .WithMany("MedicalDevices")
                         .HasForeignKey("BinID")
                         .OnDelete(DeleteBehavior.Cascade);

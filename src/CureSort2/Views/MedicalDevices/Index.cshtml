@@ -12,7 +12,7 @@
     <div class="form-actions no-color">
         <p>
             <input id="SearchBox" placeholder="Search" autofocus type="text" name="barcode" style="margin-top:12px; width:200px" value="@ViewData["currentFilter"]" onkeypress="handle(event)" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
+            <input type="submit" value="Search" class="btn btn-default" /> | @ViewBag.EmptyList
 @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
 {
             <a asp-action="Index">Back to Full List</a>
@@ -20,6 +20,7 @@
         </p>
     </div>
 </form>
+
 <table class="table">
     <thead>
         <tr>

@@ -39,26 +39,55 @@ namespace CureSort2.Controllers
                 barcode = currentFilter;
             }
             ViewData["CurrentFilter"] = barcode;
+            ViewBag.EmptyList = "";
 
             var cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                              where m.ID.Equals("?")
                               select m;
 
 
-            if (String.IsNullOrEmpty(barcode))
+            if (String.IsNullOrEmpty(barcode) && User.IsInRole("Administrator"))
             {
-                cureContext = cureContext.Where(m => (m.IsApproved.Equals(false)));
+                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                              where m.IsApproved.Equals(false)
+                              select m;
             }
             else if(!String.IsNullOrEmpty(barcode) && User.IsInRole("Administrator"))
             {
-                cureContext = cureContext.Where(m => m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode) || (m.Brand + " " + m.Description).Contains(barcode));
+                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                              where m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode) || (m.Brand + " " + m.Description).Contains(barcode)
+                              select m;
+
+                if(cureContext.Any())
+                {
+
+                }
+                else
+                {
+                    ViewBag.EmptyList = "No matches found.";
+                }
             }
             else if (String.IsNullOrEmpty(barcode) && !User.IsInRole("Administrator"))
             {
-                cureContext = cureContext.Where(m => (m.IsApproved.Equals(true) && m.ID.Equals("?")));
+                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                              where m.ID.Equals("?") && m.IsApproved.Equals(true)
+                              select m;
+                ViewBag.EmptyList = "No matches found.";
             }
             else
             {
-                cureContext = cureContext.Where(m => m.IsApproved.Equals(true) && (m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode) || (m.Brand + " " + m.Description).Contains(barcode)));
+                cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
+                              where m.IsApproved.Equals(true) && (m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode) || (m.Brand + " " + m.Description).Contains(barcode))
+                              select m;
+
+                if (cureContext.Any())
+                {
+
+                }
+                else
+                {
+                    ViewBag.EmptyList = "No matches found.";
+                }
             }
 
             int pageSize = 100;

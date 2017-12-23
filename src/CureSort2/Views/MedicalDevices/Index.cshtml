@@ -11,7 +11,7 @@
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <p>
-            <input id="SearchBox" placeholder="Search" autofocus type="text" name="barcode" style="margin-top:12px; width:200px" value="@ViewData["currentFilter"]" onkeypress="handle(event)" />
+            <input id="SearchBox" placeholder="Search" autofocus type="text" name="barcode" style="margin-top:12px; width:200px" value="@ViewData["currentFilter"]" />
             <input type="submit" value="Search" class="btn btn-default" /> | @ViewBag.EmptyList
 @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
 {
@@ -54,6 +54,18 @@
                 PhotoUrl
             </th>
             }
+            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            {
+                <th>
+                    IsMarked
+                </th>
+            }
+            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            {
+                <th>
+                    Problem
+                </th>
+            }
             <th></th>
         </tr>
     </thead>
@@ -90,8 +102,21 @@
                 <a href="@item.PhotoUrl"><img src="@item.PhotoUrl" height="50" width="50" alt="@item.Description"/></a>
             </td>
             }
+            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsMarked)
+                </td>
+            }
+            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.Problem)
+                </td>
+            }
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Mark" asp-route-id="@item.ID">Mark</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
             </td>

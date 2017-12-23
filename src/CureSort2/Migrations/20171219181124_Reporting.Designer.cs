@@ -8,9 +8,10 @@ using CureSort2.Data;
 namespace CureSort2.Migrations
 {
     [DbContext(typeof(CureContext))]
-    partial class CureContextModelSnapshot : ModelSnapshot
+    [Migration("20171219181124_Reporting")]
+    partial class Reporting
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -56,8 +57,6 @@ namespace CureSort2.Migrations
 
                     b.Property<string>("PhotoUrl")
                         .HasAnnotation("MaxLength", 200);
-
-                    b.Property<string>("Problem");
 
                     b.HasKey("ID");
 

@@ -1,0 +1,46 @@
+﻿@model CureSort2.Models.MedicalDevice
+
+@{
+    ViewData["Title"] = "Mark";
+}
+
+<h2>Mark</h2>
+
+<form asp-action="Mark">
+    <div class="form-horizontal">
+        <h4>Item</h4>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ID" />
+        <input type="hidden" asp-for="BinID"/>
+        <input type="hidden" asp-for="Barcode"/>
+        <input type="hidden" asp-for="Brand" />
+        <input type="hidden" asp-for="Description" />
+        <input type="hidden" asp-for="Manufacturer" />
+        <input type="hidden" asp-for="IsApproved" />
+        <input type="hidden" asp-for="PhotoUrl" />
+
+        <div class="form-group">
+            <label asp-for="Problem" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Problem" class="form-control" required="required"/>
+                <span asp-validation-for="Problem" class="text-danger" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox" required="required">
+                    <input asp-for="IsMarked" />
+                    <label asp-for="IsMarked"></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>

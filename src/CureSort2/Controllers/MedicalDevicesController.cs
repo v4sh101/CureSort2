@@ -49,7 +49,7 @@ namespace CureSort2.Controllers
             if (String.IsNullOrEmpty(barcode) && User.IsInRole("Administrator"))
             {
                 cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
-                              where m.IsApproved.Equals(false)
+                              where m.IsApproved.Equals(false) || m.IsMarked.Equals(true)
                               select m;
             }
             else if(!String.IsNullOrEmpty(barcode) && User.IsInRole("Administrator"))
@@ -167,13 +167,64 @@ namespace CureSort2.Controllers
             return View(medicalDevice);
         }
 
+        public async Task<IActionResult> Mark(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var medicalDevice = await _context.MedicalDevices.Include(c => c.Bin).SingleOrDefaultAsync(m => m.ID == id);
+            if (medicalDevice == null)
+            {
+                return NotFound();
+            }
+            return View(medicalDevice);
+        }
+
+        // POST: MedicalDevices/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Mark(int id, [Bind("ID,Barcode,BinID,Brand,CreatedBy,Description,IsApproved,Manufacturer,PhotoUrl,IsMarked,Problem")] MedicalDevice medicalDevice)
+        {
+            if (id != medicalDevice.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                medicalDevice.CreatedBy = User.Identity.Name;
+                try
+                {
+                    _context.Update(medicalDevice);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MedicalDeviceExists(medicalDevice.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            return View(medicalDevice);
+        }
+
         // POST: MedicalDevices/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Barcode,BinID,Brand,CreatedBy,Description,IsApproved,Manufacturer,PhotoUrl")] MedicalDevice medicalDevice)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Barcode,BinID,Brand,CreatedBy,Description,IsApproved,Manufacturer,PhotoUrl,IsMarked,Problem")] MedicalDevice medicalDevice)
         {
             if (id != medicalDevice.ID)
             {

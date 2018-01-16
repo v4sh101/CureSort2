@@ -8,9 +8,10 @@ using CureSort2.Data;
 namespace CureSort2.Migrations
 {
     [DbContext(typeof(CureContext))]
-    partial class CureContextModelSnapshot : ModelSnapshot
+    [Migration("20180103003054_UserKey")]
+    partial class UserKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -23,6 +24,8 @@ namespace CureSort2.Migrations
 
                     b.Property<string>("Email");
 
+                    b.Property<int?>("FlagID");
+
                     b.Property<int?>("MedicalDeviceID");
 
                     b.Property<string>("RoleName");
@@ -30,6 +33,8 @@ namespace CureSort2.Migrations
                     b.Property<string>("Username");
 
                     b.HasKey("UserID");
+
+                    b.HasIndex("FlagID");
 
                     b.HasIndex("MedicalDeviceID");
 
@@ -57,27 +62,19 @@ namespace CureSort2.Migrations
                     b.Property<int>("FlagID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Comments")
-                        .IsRequired();
+                    b.Property<int>("AdminID");
 
-                    b.Property<DateTime>("DateReviewed");
-
-                    b.Property<DateTime>("DateSubmitted");
+                    b.Property<string>("Comments");
 
                     b.Property<bool>("IsActive");
 
                     b.Property<int>("MedicalDeviceID");
 
-                    b.Property<string>("Name")
-                        .IsRequired();
+                    b.Property<string>("Name");
 
-                    b.Property<string>("Problem")
-                        .IsRequired();
+                    b.Property<string>("Problem");
 
-                    b.Property<string>("ReviewedBy");
-
-                    b.Property<string>("Warehouse")
-                        .IsRequired();
+                    b.Property<string>("Warehouse");
 
                     b.HasKey("FlagID");
 
@@ -100,22 +97,14 @@ namespace CureSort2.Migrations
                     b.Property<string>("CreatedBy")
                         .HasAnnotation("MaxLength", 80);
 
-                    b.Property<DateTime>("DateSubmitted");
-
                     b.Property<string>("Description");
 
                     b.Property<bool>("IsApproved");
 
                     b.Property<string>("Manufacturer");
 
-                    b.Property<string>("Name")
-                        .IsRequired();
-
                     b.Property<string>("PhotoUrl")
                         .HasAnnotation("MaxLength", 200);
-
-                    b.Property<string>("Warehouse")
-                        .IsRequired();
 
                     b.HasKey("ID");
 
@@ -126,6 +115,10 @@ namespace CureSort2.Migrations
 
             modelBuilder.Entity("CureSort2.Models.AccountViewModels.UserViewModel", b =>
                 {
+                    b.HasOne("CureSort2.Models.Flag")
+                        .WithMany("Admins")
+                        .HasForeignKey("FlagID");
+
                     b.HasOne("CureSort2.Models.MedicalDevice")
                         .WithMany("Admins")
                         .HasForeignKey("MedicalDeviceID");

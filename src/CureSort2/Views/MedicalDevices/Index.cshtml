@@ -54,6 +54,24 @@
                 PhotoUrl
             </th>
             }
+@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+{
+            <th>
+                Submitted By
+            </th>
+}
+@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+{
+            <th>
+                Warehouse
+            </th>
+}
+@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+{
+            <th>
+                Date Submitted
+            </th>
+}
             <th></th>
         </tr>
     </thead>
@@ -90,10 +108,35 @@
                 <a href="@item.PhotoUrl"><img src="@item.PhotoUrl" height="50" width="50" alt="@item.Description"/></a>
             </td>
             }
+@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+{
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+}
+@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+{
+            <td>
+                @Html.DisplayFor(modelItem => item.Warehouse)
+            </td>
+}
+@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+{
+            <td>
+                @Html.DisplayFor(modelItem => item.DateSubmitted)
+            </td>
+}
+            <td>
+@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+{
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+}
+                <a asp-controller="flags" asp-action="create" asp-route-id="@item.ID">Flag</a>
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+{
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+}
             </td>
         </tr>
 }

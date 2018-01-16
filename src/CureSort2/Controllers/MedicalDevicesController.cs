@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using CureSort2.Controllers;
 
 namespace CureSort2.Controllers
 {
@@ -123,8 +124,10 @@ namespace CureSort2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Barcode,BinID,Brand,CreatedBy,Description,IsApproved,Manufacturer,PhotoUrl")] MedicalDevice medicalDevice, IFormFile file)
+        public async Task<IActionResult> Create([Bind("ID,Barcode,BinID,Brand,CreatedBy,Description,IsApproved,Manufacturer,PhotoUrl,Name,Warehouse,DateSubmitted")] MedicalDevice medicalDevice, IFormFile file)
         {
+
+            medicalDevice.DateSubmitted = DateTime.UtcNow;
             if (ModelState.IsValid)
             {
                 if (file != null)
@@ -173,7 +176,7 @@ namespace CureSort2.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Barcode,BinID,Brand,CreatedBy,Description,IsApproved,Manufacturer,PhotoUrl")] MedicalDevice medicalDevice)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Barcode,BinID,Brand,CreatedBy,Description,IsApproved,Manufacturer,PhotoUrl,Name,Warehouse,DateSubmitted")] MedicalDevice medicalDevice)
         {
             if (id != medicalDevice.ID)
             {

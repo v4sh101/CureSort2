@@ -8,9 +8,10 @@ using CureSort2.Data;
 namespace CureSort2.Migrations
 {
     [DbContext(typeof(CureContext))]
-    partial class CureContextModelSnapshot : ModelSnapshot
+    [Migration("20180104042426_AddDate")]
+    partial class AddDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -57,8 +58,7 @@ namespace CureSort2.Migrations
                     b.Property<int>("FlagID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Comments")
-                        .IsRequired();
+                    b.Property<string>("Comments");
 
                     b.Property<DateTime>("DateReviewed");
 
@@ -68,16 +68,13 @@ namespace CureSort2.Migrations
 
                     b.Property<int>("MedicalDeviceID");
 
-                    b.Property<string>("Name")
-                        .IsRequired();
+                    b.Property<string>("Name");
 
-                    b.Property<string>("Problem")
-                        .IsRequired();
+                    b.Property<string>("Problem");
 
                     b.Property<string>("ReviewedBy");
 
-                    b.Property<string>("Warehouse")
-                        .IsRequired();
+                    b.Property<string>("Warehouse");
 
                     b.HasKey("FlagID");
 
@@ -100,22 +97,14 @@ namespace CureSort2.Migrations
                     b.Property<string>("CreatedBy")
                         .HasAnnotation("MaxLength", 80);
 
-                    b.Property<DateTime>("DateSubmitted");
-
                     b.Property<string>("Description");
 
                     b.Property<bool>("IsApproved");
 
                     b.Property<string>("Manufacturer");
 
-                    b.Property<string>("Name")
-                        .IsRequired();
-
                     b.Property<string>("PhotoUrl")
                         .HasAnnotation("MaxLength", 200);
-
-                    b.Property<string>("Warehouse")
-                        .IsRequired();
 
                     b.HasKey("ID");
 

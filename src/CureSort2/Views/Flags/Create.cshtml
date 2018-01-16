@@ -1,0 +1,71 @@
+@model CureSort2.Models.Flag
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<form asp-action="Create">
+    <div class="form-horizontal">
+        <h4>Flag</h4>
+        <p>@ViewBag.Error</p>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Comments" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Comments" class="form-control"/>
+                <span asp-validation-for="Comments" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">Volunteer Name</label>
+            <div class="col-md-10">
+                <input asp-for="Name" class="form-control"/>
+                <span asp-validation-for="Name" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Problem" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Problem" class="form-control">
+                    <option value="Incorrect Barcode">Incorrect Barcode</option>
+                    <option value="Product Code Error">Product Code Error</option>
+                    <option value="Incorrect Description">Incorrect Description</option>
+                    <option value="Wrong Brand">Wrong Brand</option>
+                    <option value="Wrong Manufacturer">Wrong Manufacturer</option>
+                    <option value="Other">Other</option>
+                </select>
+                <span asp-validation-for="Problem" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Warehouse" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Warehouse" class="form-control">
+                    <option value="Chicago">Chicago</option>
+                    <option value="Denver">Denver</option>
+                    <option value="Houston">Houston</option>
+                    <option value="Nashville">Nashville</option>
+                    <option value="Philadelphia">Philadelphia</option>
+                    <option value="Phoenix">Phoenix</option>
+                </select>
+                <span asp-validation-for="Warehouse" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

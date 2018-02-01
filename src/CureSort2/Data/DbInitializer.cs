@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CureSort2.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CureSort2.Data
 {
@@ -24,8 +26,8 @@ namespace CureSort2.Data
              context.SaveChanges(); 
          } **/
 
-           /** var bins = new Bin[]
-           {
+            /** var bins = new Bin[]
+            {
 new Bin {BinNumber="1211", Name="BLANK CODE FOR FUTURE USE", InUse=false},
 new Bin {BinNumber="1628", Name="Laparoscopic supplies and equipment - Gyn, General and Thoracic", InUse=true},
 new Bin {BinNumber="5214", Name="CART, UTILITY ", InUse=true},
@@ -836,13 +838,13 @@ new Bin {BinNumber="3307", Name="OTOSCOPE / OPHTHALMOSCOPE , BATTERY OPERATED", 
 new Bin {BinNumber="5208", Name="CART, CRASH", InUse=true},
 new Bin {BinNumber="603", Name="BLANK CODE FOR FUTURE USE", InUse=false},
 new Bin {BinNumber="6927", Name="TUMBLE FORM", InUse=true}
-           };
+            };
 
-            foreach (Bin b in bins)
-            {
-                context.Bins.Add(b);
-            }
-            context.SaveChanges();**/
+             foreach (Bin b in bins)
+             {
+                 context.Bins.Add(b);
+             }
+             context.SaveChanges();**/
         }
      }
 }

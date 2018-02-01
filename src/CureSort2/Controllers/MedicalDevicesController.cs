@@ -186,6 +186,8 @@ namespace CureSort2.Controllers
             if (ModelState.IsValid)
             {
                 medicalDevice.CreatedBy = User.Identity.Name;
+                medicalDevice.Name = "";
+                medicalDevice.Warehouse = "";
                 try
                 {
                     _context.Update(medicalDevice);

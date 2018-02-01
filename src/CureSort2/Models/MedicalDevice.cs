@@ -20,10 +20,8 @@ namespace CureSort2.Models
         [StringLength(200)]
         public string PhotoUrl { get; set; }
         public bool IsApproved { get; set; }
-        [Required]
         [Display(Name = "Submitted By")]
         public string Name { get; set; }
-        [Required]
         public string Warehouse { get; set; }
         [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DateSubmitted { get; set; }

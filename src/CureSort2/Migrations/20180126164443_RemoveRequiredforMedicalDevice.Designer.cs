@@ -8,9 +8,10 @@ using CureSort2.Data;
 namespace CureSort2.Migrations
 {
     [DbContext(typeof(CureContext))]
-    partial class CureContextModelSnapshot : ModelSnapshot
+    [Migration("20180126164443_RemoveRequiredforMedicalDevice")]
+    partial class RemoveRequiredforMedicalDevice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")

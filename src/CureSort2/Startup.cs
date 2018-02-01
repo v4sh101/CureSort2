@@ -42,7 +42,7 @@ namespace CureSort2
 
         public static class RolesData
         {
-            private static readonly string[] Roles = new string[] { "Administrator"};
+            private static readonly string[] Roles = new string[] { "Administrator", "SubAdmin"};
 
             public static async Task SeedRoles(IServiceProvider serviceProvider)
             {

@@ -44,9 +44,7 @@
       "version": "1.0.0-preview2-final",
       "type": "build"
     },
-    "Microsoft.ApplicationInsights.AspNetCore": "1.0.2",
-    "System.Reflection": "4.3.0",
-    "System.Reflection.Extensions": "4.3.0"
+    "Microsoft.ApplicationInsights.AspNetCore": "1.0.2"
   },
 
   "tools": {

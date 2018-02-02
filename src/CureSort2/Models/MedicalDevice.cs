@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using CureSort2.Attributes;
 
 namespace CureSort2.Models
 {
     public class MedicalDevice
     {
+        [PrimaryKeyAttribute]
         public int ID { get; set; }
         [StringLength(80)]
         public string CreatedBy { get; set; }

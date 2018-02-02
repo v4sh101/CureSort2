@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using CureSort2.Controllers;
+using CureSort2.Services;
 
 namespace CureSort2.Controllers
 {
@@ -20,6 +21,7 @@ namespace CureSort2.Controllers
     {
         private readonly CureContext _context;
         private IHostingEnvironment _environment;
+        private MedicalDevice oldmedicaldevice;
 
         public MedicalDevicesController(CureContext context, IHostingEnvironment environment)
         {
@@ -95,6 +97,18 @@ namespace CureSort2.Controllers
             return View(await PaginatedList<MedicalDevice>.CreateAsync(cureContext.AsNoTracking(), page ?? 1, pageSize));
         }
 
+        public void AddChanges(int? id, object medicaldevice1, object medicaldevice2)
+        {
+            ChangeLogService service = new ChangeLogService();
+            var logs = service.GetChanges(medicaldevice1, medicaldevice2, User.Identity.Name, id);
+
+            foreach(var log in logs)
+            {
+                _context.Add(log);
+                _context.SaveChangesAsync();
+            }
+        }
+
         // GET: MedicalDevices/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -166,6 +180,7 @@ namespace CureSort2.Controllers
             {
                 return NotFound();
             }
+            oldmedicaldevice = medicalDevice;
             PopulateBinsDropDownList(medicalDevice.BinID);
             return View(medicalDevice);
         }
@@ -186,8 +201,8 @@ namespace CureSort2.Controllers
             if (ModelState.IsValid)
             {
                 medicalDevice.CreatedBy = User.Identity.Name;
-                medicalDevice.Name = "";
-                medicalDevice.Warehouse = "";
+                oldmedicaldevice = GetMedicalDevicebyID(id);
+                AddChanges(id, oldmedicaldevice, medicalDevice);
                 try
                 {
                     _context.Update(medicalDevice);
@@ -216,6 +231,12 @@ namespace CureSort2.Controllers
                                    orderby b.BinNumber
                                    select b;
             ViewBag.BinID = new SelectList(binsQuery.AsNoTracking(), "BinID", "BinNumber", selectedBin);
+        }
+
+        private MedicalDevice GetMedicalDevicebyID(int? id)
+        {
+            var medicaldevice = _context.MedicalDevices.First(i => i.ID == id);
+            return medicaldevice;
         }
 
         // GET: MedicalDevices/Delete/5

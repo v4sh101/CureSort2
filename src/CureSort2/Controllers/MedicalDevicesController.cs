@@ -20,13 +20,11 @@ namespace CureSort2.Controllers
     {
         private readonly CureContext _context;
         private IHostingEnvironment _environment;
-        private IMedicalDeviceLogRepository _mdrepository;
 
-        public MedicalDevicesController(CureContext context, IHostingEnvironment environment, IMedicalDeviceLogRepository mdrepository)
+        public MedicalDevicesController(CureContext context, IHostingEnvironment environment)
         {
             _environment = environment;
-            _context = context;
-            _mdrepository = mdrepository;
+            _context = context;    
         }
 
         // GET: MedicalDevices
@@ -154,22 +152,6 @@ namespace CureSort2.Controllers
             return View(medicalDevice);
         }
 
-        private MedicalDevice GetMedicalDeviceById(int? id)
-        {
-            return _context.MedicalDevices.FirstOrDefault(m => m.ID == id);
-        }
-
-        private void AddLog(MedicalDevice md1, MedicalDevice md2)
-        {
-            MedicalDeviceLog mdlog = new MedicalDeviceLog();
-            mdlog.New = md2.Description;
-            mdlog.Old = md1.Description;
-            mdlog.WhatChanged = "Description";
-            mdlog.Date = DateTime.UtcNow;
-            mdlog.ChangedBy = User.Identity.Name;
-            _mdrepository.Add(mdlog);
-        }
-
         // GET: MedicalDevices/Edit/5
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
@@ -196,7 +178,6 @@ namespace CureSort2.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Barcode,BinID,Brand,CreatedBy,Description,IsApproved,Manufacturer,PhotoUrl,Name,Warehouse,DateSubmitted")] MedicalDevice medicalDevice)
         {
-            MedicalDevice oldmedicaldevice = GetMedicalDeviceById(id);
             if (id != medicalDevice.ID)
             {
                 return NotFound();
@@ -207,7 +188,6 @@ namespace CureSort2.Controllers
                 medicalDevice.CreatedBy = User.Identity.Name;
                 medicalDevice.Name = "";
                 medicalDevice.Warehouse = "";
-                AddLog(oldmedicaldevice, medicalDevice);
                 try
                 {
                     _context.Update(medicalDevice);

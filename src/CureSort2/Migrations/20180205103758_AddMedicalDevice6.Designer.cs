@@ -8,9 +8,10 @@ using CureSort2.Data;
 namespace CureSort2.Migrations
 {
     [DbContext(typeof(CureContext))]
-    partial class CureContextModelSnapshot : ModelSnapshot
+    [Migration("20180205103758_AddMedicalDevice6")]
+    partial class AddMedicalDevice6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -131,7 +132,7 @@ namespace CureSort2.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<int?>("MedicalDeviceID");
+                    b.Property<int>("ID");
 
                     b.Property<string>("New");
 
@@ -141,7 +142,7 @@ namespace CureSort2.Migrations
 
                     b.HasKey("Key");
 
-                    b.HasIndex("MedicalDeviceID");
+                    b.HasIndex("ID");
 
                     b.ToTable("MedicalDeviceLog");
                 });
@@ -173,7 +174,8 @@ namespace CureSort2.Migrations
                 {
                     b.HasOne("CureSort2.Models.MedicalDevice", "MedicalDevice")
                         .WithMany("MedicalDeviceLogs")
-                        .HasForeignKey("MedicalDeviceID");
+                        .HasForeignKey("ID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
         }
     }

@@ -8,9 +8,10 @@ using CureSort2.Data;
 namespace CureSort2.Migrations
 {
     [DbContext(typeof(CureContext))]
-    partial class CureContextModelSnapshot : ModelSnapshot
+    [Migration("20180205091814_AddMedicalDevice1")]
+    partial class AddMedicalDevice1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -122,30 +123,6 @@ namespace CureSort2.Migrations
                     b.ToTable("MedicalDevice");
                 });
 
-            modelBuilder.Entity("CureSort2.Models.MedicalDeviceLog", b =>
-                {
-                    b.Property<long>("Key")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ChangedBy");
-
-                    b.Property<DateTime>("Date");
-
-                    b.Property<int?>("MedicalDeviceID");
-
-                    b.Property<string>("New");
-
-                    b.Property<string>("Old");
-
-                    b.Property<string>("WhatChanged");
-
-                    b.HasKey("Key");
-
-                    b.HasIndex("MedicalDeviceID");
-
-                    b.ToTable("MedicalDeviceLog");
-                });
-
             modelBuilder.Entity("CureSort2.Models.AccountViewModels.UserViewModel", b =>
                 {
                     b.HasOne("CureSort2.Models.MedicalDevice")
@@ -167,13 +144,6 @@ namespace CureSort2.Migrations
                         .WithMany("MedicalDevices")
                         .HasForeignKey("BinID")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("CureSort2.Models.MedicalDeviceLog", b =>
-                {
-                    b.HasOne("CureSort2.Models.MedicalDevice", "MedicalDevice")
-                        .WithMany("MedicalDeviceLogs")
-                        .HasForeignKey("MedicalDeviceID");
                 });
         }
     }

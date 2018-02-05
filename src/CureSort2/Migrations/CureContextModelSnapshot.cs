@@ -122,31 +122,6 @@ namespace CureSort2.Migrations
                     b.ToTable("MedicalDevice");
                 });
 
-            modelBuilder.Entity("CureSort2.Models.MedicalDeviceLog", b =>
-                {
-                    b.Property<long>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("0");
-
-                    b.Property<string>("ChangedBy");
-
-                    b.Property<DateTime>("Date");
-
-                    b.Property<int?>("MedicalDeviceID");
-
-                    b.Property<string>("New");
-
-                    b.Property<string>("Old");
-
-                    b.Property<string>("WhatChanged");
-
-                    b.HasKey("Key");
-
-                    b.HasIndex("MedicalDeviceID");
-
-                    b.ToTable("MedicalDeviceLogs");
-                });
-
             modelBuilder.Entity("CureSort2.Models.AccountViewModels.UserViewModel", b =>
                 {
                     b.HasOne("CureSort2.Models.MedicalDevice")
@@ -168,13 +143,6 @@ namespace CureSort2.Migrations
                         .WithMany("MedicalDevices")
                         .HasForeignKey("BinID")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("CureSort2.Models.MedicalDeviceLog", b =>
-                {
-                    b.HasOne("CureSort2.Models.MedicalDevice", "MedicalDevice")
-                        .WithMany("MedicalDeviceLogs")
-                        .HasForeignKey("MedicalDeviceID");
                 });
         }
     }

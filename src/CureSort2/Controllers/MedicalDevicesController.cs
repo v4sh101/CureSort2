@@ -19,14 +19,12 @@ namespace CureSort2.Controllers
     public class MedicalDevicesController : Controller
     {
         private readonly CureContext _context;
-        private readonly IMedicalDeviceRepository _medicaldevice;
         private IHostingEnvironment _environment;
 
-        public MedicalDevicesController(CureContext context, IHostingEnvironment environment, IMedicalDeviceRepository medicaldevice)
+        public MedicalDevicesController(CureContext context, IHostingEnvironment environment)
         {
             _environment = environment;
-            _context = context;
-            _medicaldevice = medicaldevice; 
+            _context = context;    
         }
 
         // GET: MedicalDevices
@@ -154,39 +152,6 @@ namespace CureSort2.Controllers
             return View(medicalDevice);
         }
 
-        public MedicalDevice GetMedicalDevice(int? id)
-        {
-            MedicalDevice medicaldevice = _context.MedicalDevices.AsNoTracking().FirstOrDefault(x => x.ID == (int)id);
-            return medicaldevice;
-        }
-
-        public void addLog(MedicalDevice oldmedicaldevice, MedicalDevice newmedicaldevice)
-        {
-            MedicalDeviceLog MDLog = new MedicalDeviceLog();
-
-            if(oldmedicaldevice.ID == newmedicaldevice.ID)
-            {
-                if(oldmedicaldevice.Description != newmedicaldevice.Description)
-                {
-                    MDLog.Date = DateTime.UtcNow;
-                    MDLog.ChangedBy = User.Identity.Name;
-                    MDLog.WhatChanged = "Description";
-                    MDLog.Old = oldmedicaldevice.Description;
-                    MDLog.New = newmedicaldevice.Description;
-                    MDLog.MedicalDevice = oldmedicaldevice;
-                    _medicaldevice.Add(MDLog);
-                }
-                else
-                {
-
-                }
-            }
-            else
-            {
-
-            }
-        }
-
         // GET: MedicalDevices/Edit/5
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
@@ -223,8 +188,6 @@ namespace CureSort2.Controllers
                 medicalDevice.CreatedBy = User.Identity.Name;
                 medicalDevice.Name = "";
                 medicalDevice.Warehouse = "";
-                MedicalDevice oldmedicaldevice = GetMedicalDevice(id);
-                addLog(oldmedicaldevice, medicalDevice);
                 try
                 {
                     _context.Update(medicalDevice);

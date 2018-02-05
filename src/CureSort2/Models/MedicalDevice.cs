@@ -28,7 +28,6 @@ namespace CureSort2.Models
 
         public Bin Bin { get; set; }
         public List<UserViewModel> Admins { get; set; }
-        public ICollection<MedicalDeviceLog> MedicalDeviceLogs { get; set; }
         public ICollection<Flag> Flags { get; set; }
     }
 }

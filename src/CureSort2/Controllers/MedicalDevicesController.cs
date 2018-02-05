@@ -20,11 +20,13 @@ namespace CureSort2.Controllers
     {
         private readonly CureContext _context;
         private IHostingEnvironment _environment;
+        private IMedicalDeviceLogRepository _mdrepository;
 
-        public MedicalDevicesController(CureContext context, IHostingEnvironment environment)
+        public MedicalDevicesController(CureContext context, IHostingEnvironment environment, IMedicalDeviceLogRepository mdrepository)
         {
             _environment = environment;
-            _context = context;    
+            _context = context;
+            _mdrepository = mdrepository;    
         }
 
         // GET: MedicalDevices
@@ -152,6 +154,113 @@ namespace CureSort2.Controllers
             return View(medicalDevice);
         }
 
+        private MedicalDevice GetMedicalDeviceById(int? id)
+        {
+            return _context.MedicalDevices.AsNoTracking().FirstOrDefault(m => m.ID == id);
+        }
+
+        private string GetBinNumber(int id)
+        {
+            var binsQuery = from b in _context.Bins
+                            orderby b.BinNumber
+                            where b.BinID == id
+                            select b;
+            return binsQuery.First().BinNumber;
+        }
+
+        private void AddLog(MedicalDevice md1, MedicalDevice md2)
+        {
+            MedicalDeviceLog mdlog = new MedicalDeviceLog();
+            if (md1.Barcode != md2.Barcode)
+            {
+                mdlog.MedicalDeviceID = md2.ID;
+                mdlog.New = md2.Barcode;
+                mdlog.Old = md1.Barcode;
+                mdlog.WhatChanged = "Barcode";
+                mdlog.Date = DateTime.UtcNow;
+                mdlog.ChangedBy = User.Identity.Name;
+                _mdrepository.Add(mdlog);
+            }
+            if (md1.BinID != md2.BinID)
+            {
+                mdlog = new MedicalDeviceLog();
+                mdlog.MedicalDeviceID = md2.ID;
+                mdlog.New = GetBinNumber(md2.BinID);
+                mdlog.Old = GetBinNumber(md1.BinID);
+                mdlog.WhatChanged = "Product Code";
+                mdlog.Date = DateTime.UtcNow;
+                mdlog.ChangedBy = User.Identity.Name;
+                _mdrepository.Add(mdlog);
+            }
+            if (md1.Brand != md2.Brand)
+            {
+                mdlog = new MedicalDeviceLog();
+                mdlog.MedicalDeviceID = md2.ID;
+                mdlog.New = md2.Brand;
+                mdlog.Old = md1.Brand;
+                mdlog.WhatChanged = "Brand";
+                mdlog.Date = DateTime.UtcNow;
+                mdlog.ChangedBy = User.Identity.Name;
+                _mdrepository.Add(mdlog);
+            }
+            if (md1.CreatedBy != md2.CreatedBy)
+            {
+                mdlog = new MedicalDeviceLog();
+                mdlog.MedicalDeviceID = md2.ID;
+                mdlog.New = md2.CreatedBy;
+                mdlog.Old = md1.CreatedBy;
+                mdlog.WhatChanged = "CreatedBy";
+                mdlog.Date = DateTime.UtcNow;
+                mdlog.ChangedBy = User.Identity.Name;
+                _mdrepository.Add(mdlog);
+            }
+            if (md1.Description != md2.Description)
+            {
+                mdlog = new MedicalDeviceLog();
+                mdlog.MedicalDeviceID = md2.ID;
+                mdlog.New = md2.Description;
+                mdlog.Old = md1.Description;
+                mdlog.WhatChanged = "Description";
+                mdlog.Date = DateTime.UtcNow;
+                mdlog.ChangedBy = User.Identity.Name;
+                _mdrepository.Add(mdlog);
+            }
+            if (md1.IsApproved != md2.IsApproved)
+            {
+                mdlog = new MedicalDeviceLog();
+                mdlog.MedicalDeviceID = md2.ID;
+                mdlog.New = md2.IsApproved.ToString();
+                mdlog.Old = md1.IsApproved.ToString();
+                mdlog.WhatChanged = "IsApproved";
+                mdlog.Date = DateTime.UtcNow;
+                mdlog.ChangedBy = User.Identity.Name;
+                _mdrepository.Add(mdlog);
+            }
+            if (md1.Manufacturer != md2.Manufacturer)
+            {
+                mdlog = new MedicalDeviceLog();
+                mdlog.MedicalDeviceID = md2.ID;
+                mdlog.New = md2.Manufacturer;
+                mdlog.Old = md1.Manufacturer;
+                mdlog.WhatChanged = "Manufacturer";
+                mdlog.Date = DateTime.UtcNow;
+                mdlog.ChangedBy = User.Identity.Name;
+                _mdrepository.Add(mdlog);
+            }
+            if (md1.PhotoUrl != md2.PhotoUrl)
+            {
+                mdlog = new MedicalDeviceLog();
+                mdlog.MedicalDeviceID = md2.ID;
+                mdlog.New = md2.PhotoUrl;
+                mdlog.Old = md1.PhotoUrl;
+                mdlog.WhatChanged = "PhotoUrl";
+                mdlog.Date = DateTime.UtcNow;
+                mdlog.ChangedBy = User.Identity.Name;
+                _mdrepository.Add(mdlog);
+            }
+            mdlog = new MedicalDeviceLog();
+        }
+
         // GET: MedicalDevices/Edit/5
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
@@ -178,16 +287,20 @@ namespace CureSort2.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Barcode,BinID,Brand,CreatedBy,Description,IsApproved,Manufacturer,PhotoUrl,Name,Warehouse,DateSubmitted")] MedicalDevice medicalDevice)
         {
+            
             if (id != medicalDevice.ID)
             {
                 return NotFound();
             }
+
+            MedicalDevice tempmd = GetMedicalDeviceById(id);
 
             if (ModelState.IsValid)
             {
                 medicalDevice.CreatedBy = User.Identity.Name;
                 medicalDevice.Name = "";
                 medicalDevice.Warehouse = "";
+                AddLog(tempmd, medicalDevice);
                 try
                 {
                     _context.Update(medicalDevice);

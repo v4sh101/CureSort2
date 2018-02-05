@@ -8,9 +8,10 @@ using CureSort2.Data;
 namespace CureSort2.Migrations
 {
     [DbContext(typeof(CureContext))]
-    partial class CureContextModelSnapshot : ModelSnapshot
+    [Migration("20180203032231_AddMedicalDeviceLog")]
+    partial class AddMedicalDeviceLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -124,9 +125,8 @@ namespace CureSort2.Migrations
 
             modelBuilder.Entity("CureSort2.Models.MedicalDeviceLog", b =>
                 {
-                    b.Property<long>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("0");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ChangedBy");
 
@@ -140,11 +140,11 @@ namespace CureSort2.Migrations
 
                     b.Property<string>("WhatChanged");
 
-                    b.HasKey("Key");
+                    b.HasKey("ID");
 
                     b.HasIndex("MedicalDeviceID");
 
-                    b.ToTable("MedicalDeviceLogs");
+                    b.ToTable("MedicalDeviceLog");
                 });
 
             modelBuilder.Entity("CureSort2.Models.AccountViewModels.UserViewModel", b =>

@@ -1,0 +1,76 @@
+﻿@model CureSort2.Models.MedicalDevice
+
+@{
+    ViewData["Title"] = "Admin Create";
+}
+
+<head>
+    <script type="text/javascript">
+
+function stopRKey(evt) {
+  var evt = (evt) ? evt : ((event) ? event : null);
+  var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+  if ((evt.keyCode == 13) && (node.type=="text"))  {return false;}
+}
+
+document.onkeypress = stopRKey;
+
+    </script>
+</head>
+
+<h2>Admin Create</h2>
+
+<form id="formid" method="post" asp-action="AdminCreate" enctype="multipart/form-data">
+    <div class="form-horizontal">
+        <h4>Item</h4>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Barcode" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Barcode" class="form-control" />
+                <span asp-validation-for="Barcode" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">Product Code</label>
+            <div class="col-md-10">
+                <select asp-for="BinID" class="form-control" asp-items="ViewBag.BinID" required="required"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Brand" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Brand" class="form-control" />
+                <span asp-validation-for="Brand" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Description" class="form-control" required="required" />
+                <span asp-validation-for="Description" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Manufacturer" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Manufacturer" class="form-control" />
+                <span asp-validation-for="Manufacturer" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input id="clickToSubmit" type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

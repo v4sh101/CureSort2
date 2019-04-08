@@ -58,7 +58,7 @@ namespace CureSort2.Controllers
             else if(!String.IsNullOrEmpty(barcode) && User.IsInRole("Administrator"))
             {
                 cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
-                              where m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode) || (m.Brand + " " + m.Description).Contains(barcode)
+                              where m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode) || m.Manufacturer.Contains(barcode) || (m.Brand + " " + m.Description).Contains(barcode)
                               select m;
 
                 if(cureContext.Any())
@@ -80,7 +80,7 @@ namespace CureSort2.Controllers
             else
             {
                 cureContext = from m in _context.MedicalDevices.Include(m => m.Bin)
-                              where m.IsApproved.Equals(true) && (m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode) || (m.Brand + " " + m.Description).Contains(barcode))
+                              where m.IsApproved.Equals(true) && (m.Barcode.Contains(barcode) || m.Description.Contains(barcode) || m.Brand.Contains(barcode) || m.Manufacturer.Contains(barcode) || (m.Brand + " " + m.Description).Contains(barcode))
                               select m;
 
                 if (cureContext.Any())
@@ -111,6 +111,51 @@ namespace CureSort2.Controllers
                 return NotFound();
             }
 
+            return View(medicalDevice);
+        }
+
+        // GET: MedicalDevices/Create
+        [Authorize(Roles = "Administrator")]
+        public IActionResult AdminCreate()
+        {
+            PopulateBinsDropDownList();
+            return View();
+        }
+
+        // POST: MedicalDevices/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> AdminCreate([Bind("ID,Barcode,BinID,Brand,CreatedBy,Description,IsApproved,Manufacturer,PhotoUrl,Name,Warehouse,DateSubmitted")] MedicalDevice medicalDevice, IFormFile file)
+        {
+            medicalDevice.PhotoUrl = "";
+            medicalDevice.CreatedBy = "joycarlson@projectcure.org";
+            medicalDevice.Name = "Joy Carlson";
+            medicalDevice.Warehouse = "Denver";
+            medicalDevice.DateSubmitted = DateTime.UtcNow;
+            if (ModelState.IsValid)
+            {
+                if (file != null)
+                {
+                    var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                    if (file.Length > 0)
+                    {
+                        using (var fileStream = new FileStream(Path.Combine(uploads, file.FileName), FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+                        medicalDevice.PhotoUrl = "uploads" + '/' + file.FileName;
+                    }
+                }
+                medicalDevice.CreatedBy = User.Identity.Name;
+                medicalDevice.IsApproved = true;
+                _context.Add(medicalDevice);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            PopulateBinsDropDownList(medicalDevice.BinID);
             return View(medicalDevice);
         }
 

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject IAuthorizationService _authorizationService
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -15,7 +16,6 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
-    @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top" style="background-color:crimson;">
@@ -33,15 +33,15 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index" style="color:black">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About" style="color:black">About</a></li>
-@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+                    @if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
 {
                     <li><a asp-area="" asp-controller="MedicalDevices" asp-action="Index" style="color:black">Items</a></li>
 }
-                  @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+                    @if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
                   {
                     <li><a asp-area="" asp-controller="Bins" asp-action="Index" style="color:black">Product Codes</a></li>
                   }
-@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+                    @if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
 {
     <li><a asp-area="" asp-controller="Flags" asp-action="Index" style="color:black">Flags</a></li>
 }

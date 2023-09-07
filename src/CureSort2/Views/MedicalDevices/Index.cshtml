@@ -2,18 +2,19 @@
 @{
     ViewData["Title"] = "Index";
 }
+@inject IAuthorizationService _authorizationService
 
 <h2>Index</h2>
 
 <p>
-    <a asp-action="Create">Create New</a> | @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole")) {<a asp-action="AdminCreate">Admin Create New</a>}
+    <a asp-action="Create">Create New</a> | @if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded) {<a asp-action="AdminCreate">Admin Create New</a>}
     </p>
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <p>
             <input id="SearchBox" placeholder="Search" autofocus type="text" name="barcode" style="margin-top:12px; width:200px" value="@ViewData["currentFilter"]" onkeypress="handle(event)" />
             <input type="submit" value="Search" class="btn btn-default" /> | @ViewBag.EmptyList
-@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+@if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
 {
             <a asp-action="Index">Back to Full List</a>
 }
@@ -30,7 +31,7 @@
             <th>
                 Brand
             </th>
-            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            @if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
             {
                 <th>
                     CreatedBy
@@ -39,7 +40,7 @@
             <th>
                 Description
 </th>
-            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            @if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
             {
             <th>
                 IsApproved
@@ -48,25 +49,25 @@
             <th>
                 Manufacturer
 </th>
-            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            @if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
             {
             <th>
                 PhotoUrl
             </th>
             }
-@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+@if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
 {
             <th>
                 Submitted By
             </th>
 }
-@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+@if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
 {
             <th>
                 Warehouse
             </th>
 }
-@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+@if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
 {
             <th>
                 Date Submitted
@@ -84,7 +85,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Brand)
             </td>
-            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            @if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
             {
             <td>
                 @Html.DisplayFor(modelItem => item.CreatedBy)
@@ -93,7 +94,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
-            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            @if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
             {
             <td>
                 @Html.DisplayFor(modelItem => item.IsApproved)
@@ -102,38 +103,38 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Manufacturer)
             </td>
-            @if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+            @if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
             {
             <td>
                 <a href="@item.PhotoUrl"><img src="@item.PhotoUrl" height="50" width="50" alt="@item.Description"/></a>
             </td>
             }
-@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+@if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
 {
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
 }
-@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+@if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
 {
             <td>
                 @Html.DisplayFor(modelItem => item.Warehouse)
             </td>
 }
-@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+@if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
 {
             <td>
                 @Html.DisplayFor(modelItem => item.DateSubmitted)
             </td>
 }
             <td>
-@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+@if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
 {
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
 }
                 <a asp-controller="flags" asp-action="create" asp-route-id="@item.ID">Flag</a>
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a>
-@if (await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole"))
+@if ((await _authorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
 {
                 <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
 }

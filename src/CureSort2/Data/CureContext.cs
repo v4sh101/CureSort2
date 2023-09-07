@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CureSort2.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace CureSort2.Data
 {

@@ -13,58 +13,18 @@ using CureSort2.Data;
 using CureSort2.Models;
 using CureSort2.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace CureSort2
 {
     public class Startup
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets();
-
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
-                builder.AddApplicationInsightsSettings(developerMode: true);
-            }
-
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
-        public IConfigurationRoot Configuration { get; }
-
-        public static class RolesData
-        {
-            private static readonly string[] Roles = new string[] { "Administrator", "SubAdmin"};
-
-            public static async Task SeedRoles(IServiceProvider serviceProvider)
-            {
-                var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
-                {
-                    var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-
-                        await dbContext.Database.MigrateAsync();
-
-                        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                    
-                        foreach (var role in Roles)
-                        {
-                            if (!await roleManager.RoleExistsAsync(role))
-                            {
-                                await roleManager.CreateAsync(new IdentityRole(role));
-                            }
-                        }
-                }
-            }
-        }
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -77,10 +37,12 @@ namespace CureSort2
 
             services.AddDbContext<CureContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
+            
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
 
             services.AddAuthorization(options =>
             {
@@ -92,7 +54,7 @@ namespace CureSort2
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
-            services.AddSingleton<IMedicalDeviceLogRepository, MedicalDeviceLogRepository>();
+            services.AddScoped<IMedicalDeviceLogRepository, MedicalDeviceLogRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -100,9 +62,6 @@ namespace CureSort2
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            RolesData.SeedRoles(app.ApplicationServices).Wait();
-
-            app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())
             {
@@ -115,11 +74,9 @@ namespace CureSort2
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseApplicationInsightsExceptionTelemetry();
-
             app.UseStaticFiles();
 
-            app.UseIdentity();
+            app.UseAuthentication();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 

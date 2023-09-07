@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using CureSort2.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace CureSort2.Data
 {

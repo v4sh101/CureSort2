@@ -19,10 +19,10 @@ namespace CureSort2.Controllers
     public class MedicalDevicesController : Controller
     {
         private readonly CureContext _context;
-        private IHostingEnvironment _environment;
+        private IWebHostEnvironment _environment;
         private IMedicalDeviceLogRepository _mdrepository;
 
-        public MedicalDevicesController(CureContext context, IHostingEnvironment environment, IMedicalDeviceLogRepository mdrepository)
+        public MedicalDevicesController(CureContext context, IWebHostEnvironment environment, IMedicalDeviceLogRepository mdrepository)
         {
             _environment = environment;
             _context = context;
